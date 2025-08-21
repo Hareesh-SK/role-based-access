@@ -1,4 +1,26 @@
-node_modules
-dist
-build
-.env
+# ==============================
+# Node.js / Server
+# ==============================
+server/node_modules/
+server/dist/
+server/.env
+server/*.log
+
+# ==============================
+# Angular / Client
+# ==============================
+client/node_modules/
+client/dist/
+client/.angular/
+client/.vite/
+client/.env
+client/*.log
+
+# ==============================
+# OS / Editor files
+# ==============================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
