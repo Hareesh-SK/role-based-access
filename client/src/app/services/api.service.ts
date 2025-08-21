@@ -1,16 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE_URL } from '../core/tokens';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ApiService {
-  private baseUrl = 'http://localhost:5000/api';
+  constructor(private http: HttpClient, @Inject(API_BASE_URL) private baseUrl: string) {}
 
-  constructor(private http: HttpClient) {}
-
-  getUsers(): Observable<any> { 
-    return this.http.get(`${this.baseUrl}/auth/users`); 
-  }         
-}              
+  getUsers(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/auth`);
+  }
+}

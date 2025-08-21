@@ -1,8 +1,20 @@
 import { Router } from "express";
-import { getUsers } from "../controllers/user.controller";
+import { UserController } from "../controllers/user.controller";
 
-const router = Router();
+export class UserRoutes {
+  public router: Router;
 
-router.get("/", getUsers);
+  constructor() {
+    this.router = Router();
+    this.initializeRoutes();
+  }
 
-export default router;
+  private initializeRoutes(): void {
+    
+    const userCtrl = new UserController();
+    this.router.get("/auth", (req, res) => userCtrl.fetchUsers(req, res));
+    this.router.post("/auth", (req, res) => userCtrl.createUser(req, res));
+  }
+}
+
+export default new UserRoutes().router;
