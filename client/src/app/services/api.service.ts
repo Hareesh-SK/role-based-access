@@ -7,7 +7,12 @@ import { API_BASE_URL } from '../core/tokens';
 export class ApiService {
   constructor(private http: HttpClient, @Inject(API_BASE_URL) private baseUrl: string) {}
 
-  getUsers(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/auth`);
+  login(loginData: { userId: string; password: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, loginData);
   }
+
+  getAllUsers() {
+    return this.http.get<any[]>(`${this.baseUrl}/users`); 
+  }
+
 }

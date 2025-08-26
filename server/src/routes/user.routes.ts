@@ -1,20 +1,13 @@
 import { Router } from "express";
 import { UserController } from "../controllers/user.controller";
+import { AuthMiddleware } from "../middleware/jwt.middleware";
 
-export class UserRoutes {
-  public router: Router;
+const router = Router();
+const userController = new UserController();
+const auth = new AuthMiddleware();
 
-  constructor() {
-    this.router = Router();
-    this.initializeRoutes();
-  }
+router.post("/login", (req, res) => userController.login(req, res));
+router.post("/users", (req, res) => userController.createUser(req, res));
+router.get("/users", auth.verifyToken.bind(auth), (req, res) => userController.getAllUsers(req, res));
 
-  private initializeRoutes(): void {
-    
-    const userCtrl = new UserController();
-    this.router.get("/auth", (req, res) => userCtrl.fetchUsers(req, res));
-    this.router.post("/auth", (req, res) => userCtrl.createUser(req, res));
-  }
-}
-
-export default new UserRoutes().router;
+export default router;

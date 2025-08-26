@@ -1,0 +1,33 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h2>Welcome, {{ currentUser?.name }} ({{ currentUser?.role }})</h2>
+    <button (click)="logout()">Logout</button>
+  </div>
+
+  <table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        @if(isAdmin) {
+          <th>Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for(user of users; track user._id) {
+        <tr>
+          <td>{{ user.userId }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          @if(isAdmin) {
+            <td>
+              <button (click)="editUser(user)">Edit</button>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

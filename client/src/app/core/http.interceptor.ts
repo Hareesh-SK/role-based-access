@@ -12,7 +12,7 @@ import { catchError } from 'rxjs/operators';
 @Injectable()
 export class AppHttpInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('authToken'); 
+    const token = localStorage.getItem('token'); // ✅ consistent
 
     const clonedReq = req.clone({
       setHeaders: {
