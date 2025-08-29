@@ -14,7 +14,7 @@ import { ApiService } from '../services/api.service';
 })
 export class LoginComponent {
   loginForm = this.fb.group({
-    userId: ['ad-001', [Validators.required]],
+    userId: ['ad-321', [Validators.required]],
     password: ['Admin@123', [Validators.required, Validators.minLength(6)]],
   });
 
@@ -38,7 +38,6 @@ export class LoginComponent {
       this.apiService.login(loginData).subscribe((response: any) => {
         const { user, token } = response;
 
-        // ✅ use same key everywhere
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
 

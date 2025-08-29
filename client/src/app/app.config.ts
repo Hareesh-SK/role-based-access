@@ -4,10 +4,11 @@ import { routes } from './app.routes';
 import { AppHttpInterceptor } from './core/http.interceptor';
 import { API_BASE_URL } from './core/tokens';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig = {
   providers: [
+    provideAnimations() ,
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AppHttpInterceptor, multi: true },

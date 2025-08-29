@@ -1,6 +1,6 @@
 .login-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100dvh; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,7 +55,7 @@ input:focus {
 .btn {
   width: 100%;
   padding: 10px;
-  background: #4facfe;
+  background: #3694e6;
   border: none;
   border-radius: 6px;
   color: white;
@@ -65,5 +65,5 @@ input:focus {
 }
 
 .btn:hover {
-  background: #00f2fe;
+  background: #0400fe;
 }

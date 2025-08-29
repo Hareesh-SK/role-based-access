@@ -15,4 +15,8 @@ export class ApiService {
     return this.http.get<any[]>(`${this.baseUrl}/users`); 
   }
 
+  updateUsers(payload: { newUsers: any[]; updatedUsers: any[] }) {
+    return this.http.post<any>(`${this.baseUrl}/users`, payload);
+  }
+
 }
