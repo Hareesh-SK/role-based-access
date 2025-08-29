@@ -51,7 +51,8 @@ export class UserController {
     session.startTransaction();
 
     try {
-      const { newUsers, updatedUsers }: { newUsers?: IUser[]; updatedUsers?: IUser[] } = req.body;
+      const { newUsers, updatedUsers, deletedUsers }: 
+  { newUsers?: IUser[]; updatedUsers?: IUser[]; deletedUsers?: IUser[] } = req.body;
 
       if (!newUsers && !updatedUsers) {
         res.status(400).json({ message: "Request body must contain newUsers or updatedUsers" });
@@ -86,6 +87,13 @@ export class UserController {
           if (updated) results.push(updated);
         }
       }
+
+    if (Array.isArray(deletedUsers) && deletedUsers.length > 0) {
+      for (const u of deletedUsers) {
+        if (!u._id) throw new Error("Deleted user must contain _id");
+        await User.deleteOne({ _id: u._id }, { session });
+      }
+     }
 
       // ✅ Commit if all succeeded
       await session.commitTransaction();

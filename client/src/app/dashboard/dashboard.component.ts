@@ -115,54 +115,67 @@ export class DashboardComponent implements OnInit {
   }
 
 
+  toggleDelete(user: any) {
+  user.markedForDelete = !user.markedForDelete;
+}
+
   saveChanges() {
-    const newUsers: any[] = [];
-    const updatedUsers: any[] = [];
+  const newUsers: any[] = [];
+  const updatedUsers: any[] = [];
+  const deletedUsers: any[] = [];
 
-    for (let i = 0; i < this.users.length; i++) {
-      const current = this.users[i];
-      const original = this.clonedUsers.find(u => u._id === current._id);
+  for (let i = 0; i < this.users.length; i++) {
+    const current = this.users[i];
+    const original = this.clonedUsers.find(u => u._id === current._id);
 
-      if (!current._id) {
-        // Newly added user from UI (no _id yet)
-        newUsers.push(current);
-      } else if (original) {
-        // Compare fields for existing users
-        if (
-          current.userId !== original.userId ||
-          current.name !== original.name ||
-          current.email !== original.email ||
-          current.role !== original.role
-        ) {
-          updatedUsers.push(current);
-        }
+    // ✅ Handle deleted users (only if already in DB)
+    if (current.markedForDelete && current._id) {
+      deletedUsers.push(current);
+    }
+    // ✅ Handle newly created users (no _id yet)
+    else if (!current._id && !current.markedForDelete) {
+      newUsers.push(current);
+    }
+    // ✅ Handle updates
+    else if (original && !current.markedForDelete) {
+      if (
+        current.userId !== original.userId ||
+        current.name !== original.name ||
+        current.email !== original.email ||
+        current.role !== original.role
+      ) {
+        updatedUsers.push(current);
       }
     }
-
-    if (newUsers.length === 0 && updatedUsers.length === 0) {
-      this.message = 'No changes made in any fields';
-      this.isEdit = false;
-      return;
-    }
-
-    // Object with both arrays
-    const payload = {
-      newUsers,
-      updatedUsers
-    };
-
-    this.apiService.updateUsers(payload).subscribe({
-      next: (res) => {
-        this.message = 'Changes saved successfully!';
-        this.isEdit = false;
-        this.loadUsers(); // reload to get fresh ids
-      },
-      error: (err) => {
-        this.message = 'Error saving changes!';
-        console.error(err);
-      }
-    });
   }
+
+  // ✅ If no new, update, or delete → show message
+  if (newUsers.length === 0 && updatedUsers.length === 0 && deletedUsers.length === 0) {
+    this.message = 'No changes made in any fields';
+    this.isEdit = false;
+    return;
+  }
+
+  // ✅ Prepare payload
+  const payload = {
+    newUsers,
+    updatedUsers,
+    deletedUsers
+  };
+
+  this.apiService.updateUsers(payload).subscribe({
+    next: (res) => {
+      this.message = 'Changes saved successfully!';
+      this.isEdit = false;
+      this.loadUsers(); // reload to get fresh data
+    },
+    error: (err) => {
+      this.message = 'Error saving changes!';
+      console.error(err);
+    }
+  });
+}
+
 
 
   cancelEdit() {

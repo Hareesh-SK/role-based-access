@@ -33,6 +33,14 @@
   }
 }
 
+.deleted-row input,
+.deleted-row mat-select,
+.deleted-row mat-form-field {
+  pointer-events: none;   /* disable typing */
+  opacity: 0.5;           /* fade effect */
+}
+
+
 .logout-wrapper {
   display: flex;
   flex-direction: column;

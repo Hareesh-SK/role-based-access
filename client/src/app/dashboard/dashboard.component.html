@@ -43,11 +43,14 @@
       <th>Name</th>
       <th>Email</th>
       <th>Role</th>
+      @if(isEdit) {
+        <th>Action</th>
+      }
     </tr>
   </thead>
   <tbody>
    @for (user of paginatedUsers; track user._id) {
-    <tr [class.new-row]="user.isNew">
+    <tr [class.new-row]="user.isNew" [class.deleted-row]="user.markedForDelete">
       <td>
         @if (isEdit) {
           <mat-form-field appearance="outline" class="w-40">
@@ -91,6 +94,18 @@
             {{ user.role }}
           }
         </td>
+        @if(isEdit) {
+            <td>
+              <div (click)="toggleDelete(user)">
+                @if(!user.markedForDelete){
+                  <mat-icon color="warn">delete</mat-icon>
+                } @else {
+                  <mat-icon color="primary">undo</mat-icon>
+                }
+              </div>
+            </td>
+          }
+
       </tr>
     }
   </tbody>
