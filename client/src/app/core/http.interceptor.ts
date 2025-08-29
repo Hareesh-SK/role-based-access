@@ -8,11 +8,15 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AppHttpInterceptor implements HttpInterceptor {
+
+  constructor(private router: Router) {}
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('token'); // ✅ consistent
+    const token = localStorage.getItem('token');
 
     const clonedReq = req.clone({
       setHeaders: {
@@ -24,6 +28,12 @@ export class AppHttpInterceptor implements HttpInterceptor {
     return next.handle(clonedReq).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('HTTP Error:', error);
+
+        if (error.error?.message === 'Invalid token') {
+          localStorage.removeItem('token'); 
+          this.router.navigate(['/']); 
+        }
+
         return throwError(() => error);
       })
     );

@@ -5,11 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, MatIconModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -25,7 +27,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   onSubmit() {
@@ -38,13 +41,21 @@ export class LoginComponent {
       };
 
       this.apiService.login(loginData).subscribe((response: any) => {
-        const { user, token } = response;
-
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-
-        this.router.navigate(['/dashboard']);
+        if (response.message === 'Invalid credentials') {
+          this.snackBar.open('Invalid credentials', 'Close', {
+            duration: 2500,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['custom-snackbar']
+          });
+        } else {
+          const { user, token } = response;
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          this.router.navigate(['/dashboard']);
+        }
       });
     }
   }
+
 }

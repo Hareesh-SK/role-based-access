@@ -1,20 +1,20 @@
 <div class="dashboard-container">
   
   <div class="header flex items-center gap-3 mb-4">
-    <div class="logout-wrapper" (click)="confirmLogout()" matTooltip="Logout">
+    <div class="logout-wrapper" (click)="confirmLogout()" matTooltip="{{ 'DASHBOARD.LOGOUT_TOOLTIP' | translate }}">
       <mat-icon class="logout-icon">power_settings_new</mat-icon>
-      <div class="logout-text">Log Out</div>
+      <div class="logout-text">{{ 'DASHBOARD.LOGOUT_TEXT' | translate }}</div>
     </div>
 
-    <h2>Welcome, {{ currentUser?.name }} ({{ currentUser?.role }})</h2>
+    <h2>{{ 'DASHBOARD.WELCOME' | translate:{name: currentUser?.name, role: currentUser?.role} }}</h2>
 
     @if (isAdmin) {
       @if (isEdit) {
-        <button mat-raised-button color="primary" (click)="addUser()">Add User</button>
-        <button mat-raised-button color="primary" (click)="toggleEdit()">Review Changes</button>
-        <button mat-button color="warn" (click)="cancelEdit()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="addUser()">{{ 'DASHBOARD.ADD_USER' | translate }}</button>
+        <button mat-raised-button color="primary" (click)="toggleEdit()">{{ 'DASHBOARD.REVIEW_CHANGES' | translate }}</button>
+        <button mat-button color="warn" (click)="cancelEdit()">{{ 'DASHBOARD.CANCEL' | translate }}</button>
       } @else {
-        <button mat-raised-button color="primary" (click)="toggleEdit()">Edit</button>
+        <button mat-raised-button color="primary" (click)="toggleEdit()">{{ 'DASHBOARD.EDIT' | translate }}</button>
       }
     }
   </div>
@@ -22,21 +22,21 @@
   <!-- Pagination Top -->
   @if (totalPages > 1) {
     <div class="pagination flex items-center gap-3 mb-3">
-      <button mat-stroked-button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button mat-stroked-button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      <button mat-stroked-button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">{{ 'DASHBOARD.PREV' | translate }}</button>
+      <span>{{ 'DASHBOARD.PAGE_OF' | translate:{current: currentPage, total: totalPages} }}</span>
+      <button mat-stroked-button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">{{ 'DASHBOARD.NEXT' | translate }}</button>
     </div>
   }
 
   <table class="mat-elevation-z2 w-full">
     <thead>
       <tr>
-        <th>User ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
+        <th>{{ 'DASHBOARD.USER_ID' | translate }}</th>
+        <th>{{ 'DASHBOARD.NAME' | translate }}</th>
+        <th>{{ 'DASHBOARD.EMAIL' | translate }}</th>
+        <th>{{ 'DASHBOARD.ROLE' | translate }}</th>
         @if (isEdit) {
-          <th>Action</th>
+          <th>{{ 'DASHBOARD.ACTION' | translate }}</th>
         }
       </tr>
     </thead>
@@ -52,7 +52,6 @@
               {{ user.userId }}
             }
           </td>
-
           <td>
             @if (isEdit) {
               <mat-form-field appearance="outline" class="w-40">
@@ -62,7 +61,6 @@
               {{ user.name }}
             }
           </td>
-
           <td>
             @if (isEdit) {
               <mat-form-field appearance="outline" class="w-60">
@@ -72,27 +70,25 @@
               {{ user.email }}
             }
           </td>
-
           <td>
             @if (isEdit) {
               <mat-form-field appearance="outline">
                 <mat-select [(ngModel)]="user.role">
-                  <mat-option value="Admin">Admin</mat-option>
-                  <mat-option value="General User">General User</mat-option>
+                  <mat-option value="Admin">{{ 'DASHBOARD.ADMIN' | translate }}</mat-option>
+                  <mat-option value="General User">{{ 'DASHBOARD.GENERAL_USER' | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
             } @else {
               {{ user.role }}
             }
           </td>
-
           @if (isEdit) {
             <td>
               <div (click)="toggleDelete(user)">
                 @if (!user.markedForDelete) {
-                  <mat-icon color="warn">delete</mat-icon>
+                  <mat-icon color="warn">{{ 'DASHBOARD.DELETE_ICON' | translate }}</mat-icon>
                 } @else {
-                  <mat-icon color="primary">undo</mat-icon>
+                  <mat-icon color="primary">{{ 'DASHBOARD.UNDO_ICON' | translate }}</mat-icon>
                 }
               </div>
             </td>
@@ -105,35 +101,35 @@
   <!-- Pagination Bottom -->
   @if (totalPages > 1) {
     <div class="pagination flex items-center gap-3 mt-3">
-      <button mat-stroked-button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button mat-stroked-button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      <button mat-stroked-button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">{{ 'DASHBOARD.PREV' | translate }}</button>
+      <span>{{ 'DASHBOARD.PAGE_OF' | translate:{current: currentPage, total: totalPages} }}</span>
+      <button mat-stroked-button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">{{ 'DASHBOARD.NEXT' | translate }}</button>
     </div>
   }
 </div>
 
 <!-- Logout Dialog -->
 <ng-template #logoutDialog>
-  <h2 mat-dialog-title>Confirm Logout</h2>
-  <mat-dialog-content>Are you sure you want to log out?</mat-dialog-content>
+  <h2 mat-dialog-title>{{ 'DASHBOARD.LOGOUT_TITLE' | translate }}</h2>
+  <mat-dialog-content>{{ 'DASHBOARD.LOGOUT_CONFIRM' | translate }}</mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button color="warn" [mat-dialog-close]="'confirm'">Logout</button>
+    <button mat-button mat-dialog-close>{{ 'DASHBOARD.CANCEL' | translate }}</button>
+    <button mat-button color="warn" [mat-dialog-close]="'confirm'">{{ 'DASHBOARD.LOGOUT_BUTTON' | translate }}</button>
   </mat-dialog-actions>
 </ng-template>
 
 <!-- Review Changes Dialog -->
 <ng-template #reviewDialog let-data>
-  <h2 mat-dialog-title>Review Changes</h2>
+  <h2 mat-dialog-title>{{ 'DASHBOARD.REVIEW_CHANGES_TITLE' | translate }}</h2>
   <mat-dialog-content>
     <table class="mat-elevation-z2 w-full">
       <thead>
         <tr>
-          <th>User ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Status</th>
+          <th>{{ 'DASHBOARD.USER_ID' | translate }}</th>
+          <th>{{ 'DASHBOARD.NAME' | translate }}</th>
+          <th>{{ 'DASHBOARD.EMAIL' | translate }}</th>
+          <th>{{ 'DASHBOARD.ROLE' | translate }}</th>
+          <th>{{ 'DASHBOARD.STATUS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -143,34 +139,32 @@
             <td>{{ u.name }}</td>
             <td>{{ u.email }}</td>
             <td>{{ u.role }}</td>
-            <td>🟢 New</td>
+            <td>{{ 'DASHBOARD.STATUS_NEW' | translate }}</td>
           </tr>
         }
-
         @for (u of data.updatedUsers; track u._id) {
           <tr>
             <td>{{ u.userId }}</td>
             <td>{{ u.name }}</td>
             <td>{{ u.email }}</td>
             <td>{{ u.role }}</td>
-            <td>🟡 Updated</td>
+            <td>{{ 'DASHBOARD.STATUS_UPDATED' | translate }}</td>
           </tr>
         }
-
         @for (u of data.deletedUsers; track u._id) {
           <tr class="deleted-row">
             <td>{{ u.userId }}</td>
             <td>{{ u.name }}</td>
             <td>{{ u.email }}</td>
             <td>{{ u.role }}</td>
-            <td>🔴 Deleted</td>
+            <td>{{ 'DASHBOARD.STATUS_DELETED' | translate }}</td>
           </tr>
         }
       </tbody>
     </table>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button color="primary" (click)="saveChanges(data)" mat-dialog-close>Confirm & Save</button>
+    <button mat-button mat-dialog-close>{{ 'DASHBOARD.CANCEL' | translate }}</button>
+    <button mat-button color="primary" (click)="saveChanges(data)" mat-dialog-close>{{ 'DASHBOARD.CONFIRM_SAVE' | translate }}</button>
   </mat-dialog-actions>
 </ng-template>

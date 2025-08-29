@@ -1,33 +1,33 @@
 <div class="login-container">
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-    <h2 class="title">Login</h2>
+    <h2 class="title">{{ 'LOGIN.TITLE' | translate }}</h2>
 
     <!-- User ID -->
     <div class="form-group">
-      <label>User ID</label>
+      <label>{{ 'LOGIN.USER_ID_LABEL' | translate }}</label>
       <input
         type="text"
         formControlName="userId"
-        placeholder="Enter your userId"
+        placeholder="{{ 'LOGIN.USER_ID_PLACEHOLDER' | translate }}"
       />
 
       @if(submitted && loginForm.get('userId')?.errors) {
         @if(loginForm.get('userId')?.errors?.['required']) {
-          <small class="error">User ID is required</small>
+          <small class="error">{{ 'LOGIN.USER_ID_REQUIRED' | translate }}</small>
         } @else {
-          <small class="error">Enter a valid User ID</small>
+          <small class="error">{{ 'LOGIN.USER_ID_INVALID' | translate }}</small>
         }
       }
     </div>
 
     <!-- Password -->
     <div class="form-group">
-      <label>Password</label>
+      <label>{{ 'LOGIN.PASSWORD_LABEL' | translate }}</label>
       <div class="password-wrapper" style="position: relative;">
         <input
           [type]="showPassword ? 'text' : 'password'"
           formControlName="password"
-          placeholder="Enter your password"
+          placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
         />
         <mat-icon
           class="eye-icon"
@@ -40,14 +40,13 @@
 
       @if(submitted && loginForm.get('password')?.errors) {
         @if(loginForm.get('password')?.errors?.['required']) {
-          <small class="error">Password is required</small>
+          <small class="error">{{ 'LOGIN.PASSWORD_REQUIRED' | translate }}</small>
         } @else if(loginForm.get('password')?.errors?.['minlength']) {
-          <small class="error">Password must be at least 6 characters</small>
+          <small class="error">{{ 'LOGIN.PASSWORD_MINLENGTH' | translate }}</small>
         }
       }
     </div>
 
-
-    <button type="submit" class="btn">Login</button>
+    <button type="submit" class="btn">{{ 'LOGIN.BUTTON' | translate }}</button>
   </form>
 </div>

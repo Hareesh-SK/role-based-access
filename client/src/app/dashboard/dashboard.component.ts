@@ -11,7 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogContent, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -22,8 +23,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    TranslateModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     MatDialogContent,
     MatDialogActions,
     MatDialogModule
