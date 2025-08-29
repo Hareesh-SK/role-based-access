@@ -40,6 +40,14 @@
   opacity: 0.5;           /* fade effect */
 }
 
+.custom-snackbar {
+  background-color: #1976d2; // blue
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 20px;
+}
+
 
 .logout-wrapper {
   display: flex;

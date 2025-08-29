@@ -23,11 +23,20 @@
     <!-- Password -->
     <div class="form-group">
       <label>Password</label>
-      <input
-        type="password"
-        formControlName="password"
-        placeholder="Enter your password"
-      />
+      <div class="password-wrapper" style="position: relative;">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+        <mat-icon
+          class="eye-icon"
+          (click)="showPassword = !showPassword"
+          style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"
+        >
+          {{ showPassword ? 'visibility_off' : 'visibility' }}
+        </mat-icon>
+      </div>
 
       @if(submitted && loginForm.get('password')?.errors) {
         @if(loginForm.get('password')?.errors?.['required']) {
@@ -37,6 +46,7 @@
         }
       }
     </div>
+
 
     <button type="submit" class="btn">Login</button>
   </form>
