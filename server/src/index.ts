@@ -15,6 +15,6 @@ app.use("/api", userRoutes);
 
 db.connect().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`\x1b[32mServer running on http://localhost:${PORT}\x1b[0m`);
   });
 });

@@ -19,31 +19,39 @@ export class UserController {
         return;
       }
 
-      const user = await User.findOne({ userId, password });
-      if (!user) {
+      const result = await this._login(userId, password);
+
+      if (!result) {
         res.status(200).json({ message: "Invalid credentials" });
         return;
       }
 
-      const token = this.auth.generateToken({
-        userId: user.userId,
-        role: user.role,
-        name: user.name,
-      });
-
-      res.status(200).json({
-        message: "Login successful",
-        user: {
-          userId: user.userId,
-          name: user.name,
-          role: user.role,
-        },
-        token,
-      });
+      res.status(200).json(result);
     } catch (error) {
       console.error("Error logging in:", error);
       res.status(500).json({ message: "Error logging in" });
     }
+  }
+
+  private async _login(userId: string, password: string) {
+    const user = await User.findOne({ userId, password });
+    if (!user) return null;
+
+    const token = this.auth.generateToken({
+      userId: user.userId,
+      role: user.role,
+      name: user.name,
+    });
+
+    return {
+      message: "Login successful",
+      user: {
+        userId: user.userId,
+        name: user.name,
+        role: user.role,
+      },
+      token,
+    };
   }
 
   public async updateUsers(req: Request, res: Response): Promise<void> {
@@ -52,64 +60,33 @@ export class UserController {
 
     try {
       const { newUsers, updatedUsers, deletedUsers }: 
-  { newUsers?: IUser[]; updatedUsers?: IUser[]; deletedUsers?: IUser[] } = req.body;
+        { newUsers?: IUser[]; updatedUsers?: IUser[]; deletedUsers?: IUser[] } = req.body;
 
       if (!newUsers && !updatedUsers) {
         res.status(400).json({ message: "Request body must contain newUsers or updatedUsers" });
         return;
       }
 
-      const results: IUser[] = [];
+      const result = await this._updateUsers(newUsers, updatedUsers, deletedUsers, session);
 
-      // ✅ Handle newly added users
-      if (Array.isArray(newUsers) && newUsers.length > 0) {
-        for (const u of newUsers) {
-          if (!u.userId || !u.name || !u.email) {
-            throw new Error("New user must have userId, name, and email");
-          }
-          u.password = this.generateRandomPassword(); // assign random password
-          const created = await User.create([u], { session });
-          results.push(created[0]);
-        }
-      }
-
-      // ✅ Handle updated users
-      if (Array.isArray(updatedUsers) && updatedUsers.length > 0) {
-        for (const u of updatedUsers) {
-          if (!u._id) {
-            throw new Error("Updated user must contain _id");
-          }
-          const updated = await User.findOneAndUpdate({ _id: u._id }, u, {
-            new: true,
-            runValidators: true,
-            session,
-          });
-          if (updated) results.push(updated);
-        }
-      }
-
-    if (Array.isArray(deletedUsers) && deletedUsers.length > 0) {
-      for (const u of deletedUsers) {
-        if (!u._id) throw new Error("Deleted user must contain _id");
-        await User.deleteOne({ _id: u._id }, { session });
-      }
-     }
-
-      // ✅ Commit if all succeeded
       await session.commitTransaction();
       session.endSession();
 
-      res.status(200).json({
-        message: "Users processed successfully",
-        count: results.length,
-        data: results,
-      });
+      res.status(200).json(result);
+
     } catch (error: any) {
-      // ❌ Rollback on error
       await session.abortTransaction();
       session.endSession();
 
-      console.error("Error saving users:", error);
+      if (error.code === 11000) {
+        res.status(400).json({
+          message: "Duplicate User Id found",
+          field: "userId",
+          value: error.keyValue?.userId
+        });
+        return;
+      }
+
       res.status(500).json({
         message: "Error saving users",
         error: error.message || "Unexpected error",
@@ -117,22 +94,73 @@ export class UserController {
     }
   }
 
+  private async _updateUsers(
+    newUsers: IUser[] = [],
+    updatedUsers: IUser[] = [],
+    deletedUsers: IUser[] = [],
+    session: mongoose.ClientSession
+  ) {
+    const results: IUser[] = [];
 
-private generateRandomPassword(length = 10): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+    if (newUsers.length > 0) {
+      for (const u of newUsers) {
+        if (!u.userId || !u.name || !u.email) {
+          throw new Error("New user must have userId, name, and email");
+        }
+        u.password = this.generateRandomPassword(); // assign random password
+        const created = await User.create([u], { session });
+        results.push(created[0]);
+      }
+    }
+
+    if (updatedUsers.length > 0) {
+      for (const u of updatedUsers) {
+        if (!u._id) {
+          throw new Error("Updated user must contain _id");
+        }
+        const updated = await User.findOneAndUpdate({ _id: u._id }, u, {
+          new: true,
+          runValidators: true,
+          session,
+        });
+        if (updated) results.push(updated);
+      }
+    }
+
+    if (deletedUsers.length > 0) {
+      for (const u of deletedUsers) {
+        if (!u._id) throw new Error("Deleted user must contain _id");
+        await User.deleteOne({ _id: u._id }, { session });
+      }
+    }
+
+    return {
+      message: "Users processed successfully",
+      count: results.length,
+      data: results,
+    };
   }
-  return password;
-}
+
   public async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
-      const users = await User.find();
+      const users = await this._getAllUsers();
       res.status(200).json(users);
     } catch (error) {
       console.error("Error fetching users:", error);
       res.status(500).json({ message: "Error fetching users" });
     }
+  }
+
+  private async _getAllUsers() {
+    return await User.find();
+  }
+
+  private generateRandomPassword(length = 10): string {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
   }
 }

@@ -29,9 +29,14 @@ export class AppHttpInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         console.error('HTTP Error:', error);
 
-        if (error.error?.message === 'Invalid token') {
-          localStorage.removeItem('token'); 
-          this.router.navigate(['/']); 
+        if (
+          error.error?.message === 'Invalid token' || 
+          error.status === 401 ||                     
+          error.status === 403 ||                  
+          error.status >= 500                        
+        ) {
+          localStorage.removeItem('token');
+          this.router.navigate(['/']);
         }
 
         return throwError(() => error);

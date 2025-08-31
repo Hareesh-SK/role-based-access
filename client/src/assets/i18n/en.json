@@ -12,8 +12,9 @@
     "BUTTON": "Login"
   },
   "DASHBOARD": {
-    "LOGOUT_TOOLTIP": "Logout",
     "LOGOUT_TEXT": "Log Out",
+    "DELETE_TOOLTIP": "Delete",
+    "UNDO_TOOLTIP": "Undo",
     "WELCOME": "Welcome, {{name}} ({{role}})",
     "ADD_USER": "Add User",
     "REVIEW_CHANGES": "Review Changes",

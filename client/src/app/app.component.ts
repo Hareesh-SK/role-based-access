@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AppComponent {
   constructor(private translate: TranslateService) {
-  this.translate.setDefaultLang('en'); // fallback language
-  this.translate.use('en');            // active language
+  this.translate.setDefaultLang('en'); 
+  this.translate.use('en');          
 }
 }

@@ -1,14 +1,15 @@
 <div class="dashboard-container">
   
   <div class="header flex items-center gap-3 mb-4">
-    <div class="logout-wrapper" (click)="confirmLogout()" matTooltip="{{ 'DASHBOARD.LOGOUT_TOOLTIP' | translate }}">
+    <div class="logout-wrapper" (click)="confirmLogout()" >
       <mat-icon class="logout-icon">power_settings_new</mat-icon>
       <div class="logout-text">{{ 'DASHBOARD.LOGOUT_TEXT' | translate }}</div>
     </div>
 
     <h2>{{ 'DASHBOARD.WELCOME' | translate:{name: currentUser?.name, role: currentUser?.role} }}</h2>
-
+    
     @if (isAdmin) {
+      <div class="actions">
       @if (isEdit) {
         <button mat-raised-button color="primary" (click)="addUser()">{{ 'DASHBOARD.ADD_USER' | translate }}</button>
         <button mat-raised-button color="primary" (click)="toggleEdit()">{{ 'DASHBOARD.REVIEW_CHANGES' | translate }}</button>
@@ -16,7 +17,9 @@
       } @else {
         <button mat-raised-button color="primary" (click)="toggleEdit()">{{ 'DASHBOARD.EDIT' | translate }}</button>
       }
+      </div>
     }
+    
   </div>
 
   <!-- Pagination Top -->
@@ -63,7 +66,7 @@
           </td>
           <td>
             @if (isEdit) {
-              <mat-form-field appearance="outline" class="w-60">
+              <mat-form-field appearance="outline" class="w-60" [ngClass]="{'invalid-field': user.email && !isValidEmail(user.email)}">
                 <input matInput [(ngModel)]="user.email" />
               </mat-form-field>
             } @else {
@@ -84,14 +87,34 @@
           </td>
           @if (isEdit) {
             <td>
-              <div (click)="toggleDelete(user)">
-                @if (!user.markedForDelete) {
-                  <mat-icon color="warn">{{ 'DASHBOARD.DELETE_ICON' | translate }}</mat-icon>
-                } @else {
-                  <mat-icon color="primary">{{ 'DASHBOARD.UNDO_ICON' | translate }}</mat-icon>
-                }
-              </div>
+              @if (user.isNew) {
+                <!-- Newly added row → delete immediately -->
+                <mat-icon 
+                  color="warn" 
+                  matTooltip="{{ 'DASHBOARD.DELETE_TOOLTIP' | translate }}" 
+                  (click)="deleteNewUser(user)">
+                  {{ 'DASHBOARD.DELETE_ICON' | translate }}
+                </mat-icon>
+              } @else {
+                <!-- Existing row → mark for delete / undo -->
+                <div (click)="toggleDelete(user)">
+                  @if (!user.markedForDelete) {
+                    <mat-icon 
+                      color="warn" 
+                      matTooltip="{{ 'DASHBOARD.DELETE_TOOLTIP' | translate }}">
+                      {{ 'DASHBOARD.DELETE_ICON' | translate }}
+                    </mat-icon>
+                  } @else {
+                    <mat-icon 
+                      color="primary" 
+                      matTooltip="{{ 'DASHBOARD.UNDO_TOOLTIP' | translate }}">
+                      {{ 'DASHBOARD.UNDO_ICON' | translate }}
+                    </mat-icon>
+                  }
+                </div>
+              }
             </td>
+
           }
         </tr>
       }

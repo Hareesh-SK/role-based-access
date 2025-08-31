@@ -17,8 +17,8 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class LoginComponent {
   loginForm = this.fb.group({
-    userId: ['ad-321', [Validators.required]],
-    password: ['Admin@123', [Validators.required, Validators.minLength(6)]],
+    userId: ['', [Validators.required]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   submitted = false;

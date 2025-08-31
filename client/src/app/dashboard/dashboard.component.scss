@@ -9,7 +9,7 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 20px;
 
@@ -17,6 +17,8 @@
     font-size: 20px;
     color: #333;
     margin: 0;
+    flex: 1;
+    text-align: center;
   }
 
   button {
@@ -33,15 +35,20 @@
   }
 }
 
+.actions {
+  display: flex;
+  gap: 50px; 
+}
+
 .deleted-row input,
 .deleted-row mat-select,
 .deleted-row mat-form-field {
-  pointer-events: none;   /* disable typing */
-  opacity: 0.5;           /* fade effect */
+  pointer-events: none; 
+  opacity: 0.5;         
 }
 
 .custom-snackbar {
-  background-color: #1976d2; // blue
+  background-color: #1976d2; 
   color: white;
   font-weight: bold;
   border-radius: 8px;
@@ -115,6 +122,10 @@ table {
   background: #e3f2fd;
   color: #1976d2;
 }
+.invalid-field .mat-mdc-form-field-outline {
+  border-color: red !important;
+}
+
 
 .pagination {
   margin: 10px 0;
